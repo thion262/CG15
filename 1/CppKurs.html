@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>CppKurs</title>
+<!-- 2015-01-15 Thu 09:45 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Peter Bendel" />
+<link rel="stylesheet" href="~/Downloads/org.css" type="text/css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">CppKurs</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Compilation and Linkage</a></li>
+<li><a href="#sec-2">2. Source Files Organisation</a>
+<ul>
+<li><a href="#sec-2-1">2.1. Includes</a></li>
+<li><a href="#sec-2-2">2.2. Namespaces</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. CMAKE</a>
+<ul>
+<li><a href="#sec-3-1">3.1. CMake Program Benutzung</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4. Sample1</a></li>
+<li><a href="#sec-5">5. Polymorphic Types</a></li>
+<li><a href="#sec-6">6. Sample2</a></li>
+<li><a href="#sec-7">7. Pointers,Referenzen, ResourceHandles, Zugriffsoperatoren</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Compilation and Linkage</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Bei C++ wird jedes file einzeln für sich compiliert in eigenen "translation units".
+Vor dem compilieren wird der Präprozessor ausgeführt der evtl vorhandene Macros auflöst
+und code der includes einfügt.
+</p>
+
+<p>
+Der Linker bindet die separaten translation units dann zusammen er kann daher auch
+Namenskonflikte zwischen den einzelnen translation units finden. Das passiert zum
+Beispiel bei gleich genannten Funktionen im selben Namensraum.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Source Files Organisation</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+In C++ wird in den meisten Fällen ein paar aus Header (.h) und Source files (cpp) verwendet.
+Die Header werden verwendet um Klassen und Funktionen zu deklarieren. Diese werden dann in
+den Source files implementiert.
+</p>
+</div>
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Includes</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>Includes mit Anführungszeichen ("") werden verwendet für files in localen Ordnern.
+Die &lt;&gt; suchen im Standard include Verzeichnis wo die Standard Bibliothek liegt.
+</li>
+<li>Mithilfe von Guards (den #ifndef #define und #endif MACROS) kann der Präprozessors erkennen
+ob dieser Header bereits included wurde. So kann die Textuelle Ersetzung davon abhängig
+gemacht werden ob dieses MACRO schon definiert war.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Namespaces</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Mit Namespaces kann dem Programm zusätzliche logische Struktur gegeben werden.
+Diese logische Struktur kann auf mehrere physikalische files augeteilt werden.
+Zugegriffen wird dann über den :: operator. Standard Bibliothek funktionen sind im
+namespace std untergebracht.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> CMAKE</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Mit CMake kann man sich ein Projekt von einem bestimmten compiler bzw einer
+Entwicklungsumgebung trennen. Dazu muss ein Datei die CMakeLists.txt heißt ins
+root Verzeichnis gelegt werden(und auch die entsprechenden Unterverzeichnisse).
+Für das ConsoleWars Project sieht das z.b so aus
+(erstmal nicht relevant zum selber schreiben  wichtiger ist die Benutzung):
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-cmake"><span style="color: #93E0E3;">cmake_minimum_required</span>(VERSION 2.8)
+
+<span style="color: #93E0E3;">PROJECT</span>( consoleWars )
+
+<span style="color: #93E0E3;">if</span>(UNIX)
+    <span style="color: #93E0E3;">set</span>(CMAKE_CXX_FLAGS <span style="color: #CC9393;">"${CMAKE_CXX_FLAGS} -std=c++11"</span>)
+    <span style="color: #93E0E3;">set</span>(CMAKE_CXX_FLAGS_DEBUG <span style="color: #CC9393;">"${CMAKE_CXX_FLAGS_DEBUG} -g -std=c++11"</span>)
+    <span style="color: #93E0E3;">set</span>(CMAKE_CSS_FLAGS_RELEASE <span style="color: #CC9393;">"${CMAKE_CXX_FLAGS_RELEASE} -std=c++11"</span>)
+<span style="color: #93E0E3;">endif</span>()
+
+
+<span style="color: #93E0E3;">SET</span>( consoleWars_SRCS
+     main.cpp
+     ConsoleCanvas.cpp
+     SpaceShipDrawable.cpp
+     ProjectileDrawable.cpp
+   )
+
+
+<span style="color: #93E0E3;">ADD_EXECUTABLE</span>( consoleWars ${consoleWars_SRCS}  )
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> CMake Program Benutzung</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Um ein entsprechendes Projekt zu erstellen muss in der oberen Zeile vom CMake Program
+der Ordner mit dem CMakeLists.txt file angegeben werden. Darunter dann der Ordner in dem
+das Projekt gebaut werden soll.
+Dann drückt man den Configure Button und wählt die Umgebung aus in der man Arbeiten möchte.
+Daraufhin werden Optionen erscheinen die erstmal so bleiben können. Um es zu übernehmen drückt
+man wieder Configure, damit die optionen nicht mehr rot hinterlegt sind.
+Dann noch Generate um das Projekt zu erstellen. Danach ist das Projekt in dem Zielordner.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Sample1</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #94BFF3;">#if</span><span style="color: #94BFF3; font-weight: bold;">n</span><span style="color: #94BFF3;">def</span> LINE
+<span style="color: #94BFF3;">#define</span> <span style="color: #DFAF8F;">LINE</span>
+
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;string&gt;</span>
+
+
+<span style="color: #5F7F5F;">//</span><span style="color: #7F9F7F;">logische Strukturierung mit namespace</span>
+<span style="color: #F0DFAF; font-weight: bold;">namespace</span> <span style="color: #BFEBBF;">greatNamespace</span> {
+<span style="color: #F0DFAF; font-weight: bold;">class</span> <span style="color: #7CB8BB;">LinePrinter</span> {
+<span style="color: #F0DFAF; font-weight: bold;">public</span>:
+  <span style="color: #93E0E3;">LinePrinter</span>();
+  <span style="color: #93E0E3;">LinePrinter</span>(<span style="color: #7CB8BB;">int</span>);
+
+  <span style="color: #7CB8BB;">void</span> <span style="color: #93E0E3;">drawLine</span>();
+  <span style="color: #7CB8BB;">int</span> <span style="color: #93E0E3;">getLength</span>();
+  <span style="color: #7CB8BB;">void</span> <span style="color: #93E0E3;">setLength</span>(<span style="color: #7CB8BB;">int</span>);
+
+<span style="color: #F0DFAF; font-weight: bold;">private</span>:
+  <span style="color: #BFEBBF;">std</span>::<span style="color: #7CB8BB;">string</span> <span style="color: #DFAF8F;">drawableLine_</span>;
+  <span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">lineLength_</span>;
+};
+}
+<span style="color: #94BFF3;">#endif</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"LinePrinter.h"</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;iostream&gt;</span>
+
+
+<span style="color: #5F7F5F;">//</span><span style="color: #7F9F7F;">damit die Methoden gefunden wird muss zum Klassen Namespace</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">der eigene Namespace definiert werden.</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Man h&#228;tte auch mit der Zeile</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">using namespace greatNamespace;</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">das davorschreiben sparen k&#246;nnen.</span>
+<span style="color: #BFEBBF;">greatNamespace</span>::<span style="color: #BFEBBF;">LinePrinter</span>::<span style="color: #93E0E3;">LinePrinter</span>() {
+  lineLength_ = 5;
+  <span style="color: #F0DFAF; font-weight: bold;">for</span> (<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">i</span> = 0; i &lt; lineLength_; ++i) {
+    drawableLine_ += <span style="color: #CC9393;">'-'</span>;
+  }
+}
+
+<span style="color: #BFEBBF;">greatNamespace</span>::<span style="color: #BFEBBF;">LinePrinter</span>::<span style="color: #93E0E3;">LinePrinter</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">length</span>) {
+  lineLength_ = length;
+  <span style="color: #F0DFAF; font-weight: bold;">for</span> (<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">i</span> = 0; i &lt; lineLength_; ++i) {
+    drawableLine_ += <span style="color: #CC9393;">'-'</span>;
+  }
+}
+
+<span style="color: #7CB8BB;">void</span> <span style="color: #BFEBBF;">greatNamespace</span>::<span style="color: #BFEBBF;">LinePrinter</span>::<span style="color: #93E0E3;">drawLine</span>() { <span style="color: #BFEBBF;">std</span>::cout &lt;&lt; drawableLine_ &lt;&lt; <span style="color: #CC9393;">"\n</span><span style="color: #DC8CC3; background-color: #3F3F3F;">"</span><span style="color: #DC8CC3; background-color: #3F3F3F;">; }</span>
+
+<span style="color: #7CB8BB;">int</span> <span style="color: #BFEBBF;">greatNamespace</span>::<span style="color: #BFEBBF;">LinePrinter</span>::<span style="color: #93E0E3;">getLength</span>() { <span style="color: #F0DFAF; font-weight: bold;">return</span> lineLength_; }
+
+<span style="color: #7CB8BB;">void</span> <span style="color: #BFEBBF;">greatNamespace</span>::<span style="color: #BFEBBF;">LinePrinter</span>::<span style="color: #93E0E3;">setLength</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">length</span>) {
+  drawableLine_ = <span style="color: #CC9393;">""</span>;
+  lineLength_ = length;
+  <span style="color: #F0DFAF; font-weight: bold;">for</span> (<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">i</span> = 0; i &lt; lineLength_; ++i) {
+    drawableLine_ += <span style="color: #CC9393;">'-'</span>;
+  }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"LinePrinter.h"</span>
+
+<span style="color: #F0DFAF; font-weight: bold;">using</span> <span style="color: #F0DFAF; font-weight: bold;">namespace</span> <span style="color: #BFEBBF;">std</span>;
+
+<span style="color: #7CB8BB;">int</span> <span style="color: #93E0E3;">main</span>() {
+   <span style="color: #7CB8BB;">LinePrinter</span> <span style="color: #DFAF8F;">lp</span>;
+   lp.drawLine();
+
+   <span style="color: #7CB8BB;">LinePrinter</span> <span style="color: #DFAF8F;">lp2</span>{100};
+   lp2.drawLine();
+
+   <span style="color: #7CB8BB;">LinePrinter</span> <span style="color: #DFAF8F;">lp3</span>(33);
+   <span style="color: #7CB8BB;">LinePrinter</span> <span style="color: #DFAF8F;">lp4</span>{lp3};
+   lp4.drawLine();
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Polymorphic Types</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Durch Polymorphe Typen kann während der Laufzeit abhängig vom unterliegenden Typen
+die passende Methode aufgerufen werden. Dazu benötigt wird eine Basisklasse von der
+abgeleitet wird. Diese muss auch die Methoden deklarieren. Wichtig ist hier das
+dafür ein Pointer auf die Basisklasse nötig (Basisklasse*) und die dementsprechend
+der "-&gt;" zum aufrufen der Methoden der Klasse benutzt wird. Es können hierfür die
+"built in" Pointer verwendet werden oder seit C++11 auch sogenannte unique pointers
+die sich auch um die Löschung des Objektes kümmern. Diese sind im &lt;memory&gt; header
+verfügbar. Am besten schaut man sich das auf der Seite www.cplusplus.com mit Beispiel
+an.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Sample2</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+<i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i>//</i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i> CanvasDrawable.h
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #94BFF3;">#if</span><span style="color: #94BFF3; font-weight: bold;">n</span><span style="color: #94BFF3;">def</span> DRAWABLE
+<span style="color: #94BFF3;">#define</span> <span style="color: #DFAF8F;">DRAWABLE</span>
+
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;string&gt;</span>
+
+<span style="color: #F0DFAF; font-weight: bold;">class</span> <span style="color: #7CB8BB;">CanvasDrawable</span> { <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Abstrakte Basisklasse</span>
+ <span style="color: #F0DFAF; font-weight: bold;">public</span>:
+  <span style="color: #F0DFAF; font-weight: bold;">virtual</span> <span style="color: #7CB8BB;">void</span> <span style="color: #93E0E3;">draw</span>(<span style="color: #BFEBBF;">std</span>::<span style="color: #7CB8BB;">string</span>&amp; <span style="color: #DFAF8F;">field</span>) = 0;    <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Das Schl&#252;sselwort virtual</span>
+  <span style="color: #F0DFAF; font-weight: bold;">virtual</span> <span style="color: #7CB8BB;">bool</span> <span style="color: #93E0E3;">getRemovalStatus</span>() = 0;          <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">sagt das eine abgeleitete</span>
+  <span style="color: #F0DFAF; font-weight: bold;">virtual</span> ~<span style="color: #93E0E3;">CanvasDrawable</span>() {}                  <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Klasse die Methode</span>
+};                                              <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">&#252;berschreiben kann und</span>
+                                                <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">dann Polymorph aufgerufen</span>
+                                                <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">werden kann.</span>
+<span style="color: #94BFF3;">#endif</span>
+</pre>
+</div>
+
+
+<p>
+<i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i>//</i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i> SpaceShipdrawable.h
+</p>
+
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #94BFF3;">#if</span><span style="color: #94BFF3; font-weight: bold;">n</span><span style="color: #94BFF3;">def</span> SPACESHIP
+<span style="color: #94BFF3;">#define</span> <span style="color: #DFAF8F;">SPACESHIP</span>
+
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"CanvasDrawable.h"</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;vector&gt;</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"IntRnd.h"</span>
+
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">SpaceShipdrawable leitet von CanvasDrawable ab und &#252;berschreibt draw.</span>
+<span style="color: #F0DFAF; font-weight: bold;">class</span> <span style="color: #7CB8BB;">SpaceShipDrawable</span> : <span style="color: #F0DFAF; font-weight: bold;">public</span> <span style="color: #7CB8BB;">CanvasDrawable</span> {
+ <span style="color: #F0DFAF; font-weight: bold;">public</span>:
+  <span style="color: #7CB8BB;">void</span> <span style="color: #93E0E3;">draw</span>(<span style="color: #BFEBBF;">std</span>::<span style="color: #7CB8BB;">string</span>&amp; <span style="color: #DFAF8F;">field</span>) override;
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Man sieht hier bei dem Parameter der Funktion draw den "&amp;" operator.</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Dieser bedeutet in diesem Context eine &#252;bergabe als Referenz und</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">hei&#223;t das wenn in der draw Funktion die field_ variable bearbeitet</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">wird, wird sie auch den &#252;bergegeben Parameter ver&#228;ndern. Um zu</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">garantieren das die &#252;bergebenen Parameter ihre Werte behalten</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">k&#246;nnten sie mit const deklariert werden.</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">void draw(const std::string&amp; field) override; Aber hier wollen wir</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">die Ver&#228;nderung.</span>
+
+  <span style="color: #7CB8BB;">void</span> <span style="color: #93E0E3;">moveVertical</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">steps</span>);
+  <span style="color: #7CB8BB;">void</span> <span style="color: #93E0E3;">moveHorizontal</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">steps</span>);
+  <span style="color: #7CB8BB;">void</span> <span style="color: #93E0E3;">moveRand</span>();
+
+  <span style="color: #7CB8BB;">bool</span> <span style="color: #93E0E3;">getRemovalStatus</span>() { <span style="color: #F0DFAF; font-weight: bold;">return</span> markForRemoval_; }
+  <span style="color: #7CB8BB;">int</span> <span style="color: #93E0E3;">getPos</span>() { <span style="color: #F0DFAF; font-weight: bold;">return</span> pos_; }
+
+  <span style="color: #93E0E3;">SpaceShipDrawable</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">startPos</span>);
+  ~<span style="color: #93E0E3;">SpaceShipDrawable</span>() {}
+
+ <span style="color: #F0DFAF; font-weight: bold;">private</span>:
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">private member variablen mit default werten. Die Methode checkBounds dient nu</span><span style="color: #DC8CC3; background-color: #3F3F3F;">r</span>
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">als Hilfsfunktion deswegen auch private sie ist nicht Sichtbar von au&#223;en.</span>
+  <span style="color: #7CB8BB;">bool</span> <span style="color: #93E0E3;">checkBounds</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">pos</span>);
+  <span style="color: #BFEBBF;">std</span>::<span style="color: #7CB8BB;">vector</span>&lt;<span style="color: #7CB8BB;">int</span>&gt; <span style="color: #DFAF8F;">drawIndices_</span>{0,  1,  -1, 0,  -2, -1, -2, -2, -2,
+                                -3, -3, -3, -3, -4, 1,  0,  2,  -1,
+                                2,  -2, 2,  -3, 3,  -3, 3,  -4};
+  <span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">pos_</span>;
+  <span style="color: #7CB8BB;">bool</span> <span style="color: #DFAF8F;">up_</span> = <span style="color: #BFEBBF;">false</span>;
+  <span style="color: #7CB8BB;">bool</span> <span style="color: #DFAF8F;">markForRemoval_</span> = <span style="color: #BFEBBF;">false</span>;
+  <span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">speed_</span> = 1;
+  <span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">steps_</span> = 10;
+  <span style="color: #7CB8BB;">Rand_Int</span> <span style="color: #DFAF8F;">vertRnd_</span>{3, 10};
+  <span style="color: #7CB8BB;">Rand_Int</span> <span style="color: #DFAF8F;">speedRnd_</span>{1, 3};
+};
+
+<span style="color: #94BFF3;">#endif</span>
+</pre>
+</div>
+
+<p>
+<i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i><i>//</i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i></i> SpaceShipdrawable.cpp
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"ConsoleCanvas.h"</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"SpaceShipDrawable.h"</span>
+
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;chrono&gt;</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;thread&gt;</span>
+
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Implementierung der Spaceshipdrawable funktionen.</span>
+<span style="color: #BFEBBF;">SpaceShipDrawable</span>::<span style="color: #93E0E3;">SpaceShipDrawable</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">startPos</span>) { pos_ = startPos; }
+
+<span style="color: #7CB8BB;">void</span> <span style="color: #BFEBBF;">SpaceShipDrawable</span>::<span style="color: #93E0E3;">draw</span>(<span style="color: #BFEBBF;">std</span>::<span style="color: #7CB8BB;">string</span>&amp; <span style="color: #DFAF8F;">field</span>) {
+
+  moveRand();
+
+  <span style="color: #F0DFAF; font-weight: bold;">auto</span> <span style="color: #7CB8BB;">inst</span> = <span style="color: #BFEBBF;">ConsoleCanvas</span>::get();
+  <span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">pos</span>;
+  <span style="color: #F0DFAF; font-weight: bold;">for</span> (<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">i</span> = 0; i &lt; drawIndices_.size(); i += 2) {
+    pos = pos_ + drawIndices_[i] * inst.getFieldWidth() + drawIndices_[i + 1];
+    <span style="color: #F0DFAF; font-weight: bold;">if</span> (checkBounds(pos)) {
+      field[pos] = <span style="color: #CC9393;">'8'</span>;
+    }
+  }
+}
+
+<span style="color: #7CB8BB;">void</span> <span style="color: #BFEBBF;">SpaceShipDrawable</span>::<span style="color: #93E0E3;">moveVertical</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">steps</span>) {
+  <span style="color: #F0DFAF; font-weight: bold;">auto</span> <span style="color: #7CB8BB;">inst</span> = <span style="color: #BFEBBF;">ConsoleCanvas</span>::get();
+  <span style="color: #F0DFAF; font-weight: bold;">if</span> (checkBounds(pos_ + steps * inst.getFieldWidth()))
+    pos_ = pos_ + steps * inst.getFieldWidth();
+}
+
+<span style="color: #7CB8BB;">void</span> <span style="color: #BFEBBF;">SpaceShipDrawable</span>::<span style="color: #93E0E3;">moveHorizontal</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">steps</span>) {
+  <span style="color: #F0DFAF; font-weight: bold;">auto</span> <span style="color: #7CB8BB;">inst</span> = <span style="color: #BFEBBF;">ConsoleCanvas</span>::get();
+  <span style="color: #F0DFAF; font-weight: bold;">if</span> (checkBounds(pos_ + steps)) pos_ = pos_ + steps;
+}
+
+<span style="color: #7CB8BB;">void</span> <span style="color: #BFEBBF;">SpaceShipDrawable</span>::<span style="color: #93E0E3;">moveRand</span>() {
+
+  <span style="color: #F0DFAF; font-weight: bold;">if</span> (<span style="color: #F0DFAF; font-weight: bold;">!</span>up_) {
+    moveVertical(speed_);
+    steps_ -= 1;
+    <span style="color: #F0DFAF; font-weight: bold;">if</span> (steps_ == 0) {
+      steps_ = vertRnd_();
+      speed_ = speedRnd_();
+      up_ = <span style="color: #BFEBBF;">true</span>;
+    }
+  }
+  <span style="color: #F0DFAF; font-weight: bold;">if</span> (up_) {
+    moveVertical(-1 * speed_);
+    steps_ -= 1;
+    <span style="color: #F0DFAF; font-weight: bold;">if</span> (steps_ == 0) {
+      steps_ = vertRnd_();
+      speed_ = speedRnd_();
+      up_ = <span style="color: #BFEBBF;">false</span>;
+    }
+  }
+}
+
+<span style="color: #7CB8BB;">bool</span> <span style="color: #BFEBBF;">SpaceShipDrawable</span>::<span style="color: #93E0E3;">checkBounds</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">pos</span>) {
+  <span style="color: #F0DFAF; font-weight: bold;">auto</span> <span style="color: #7CB8BB;">inst</span> = <span style="color: #BFEBBF;">ConsoleCanvas</span>::get();
+
+  <span style="color: #F0DFAF; font-weight: bold;">if</span> (pos &lt; inst.getFieldLength() &amp;&amp; pos &gt;= 0) {
+    <span style="color: #F0DFAF; font-weight: bold;">return</span> <span style="color: #BFEBBF;">true</span>;
+  }
+  <span style="color: #F0DFAF; font-weight: bold;">return</span> <span style="color: #BFEBBF;">false</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Pointers,Referenzen, ResourceHandles, Zugriffsoperatoren</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Objekte können in C++ auf zwei verschiedene Arten erstellt werden, auf dem Stack
+oder auf dem freestore auch Heap genannt. Objekte die auf dem Stack erstellt wurden
+können Ihre Größe nicht dynamisch während der Laufzeit verändern. Ein großer Vorteil
+von Objekten die auf dem Stack erstellt wurden das sie automatisch zerstört werden(bzw
+der destructor aufgerufen wird) wenn sie den scope verlassen. Deshalb sind die Container
+der Standard Bibliothek (STL) eine Hybrid Lösung von Stack und Heap.
+Der IntHandle Code zeigt wie ein Construktor - Destruktor paar das umsetzen kann.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #7CB8BB;">int</span> <span style="color: #93E0E3;">f</span>() {
+<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">a</span>[10]; <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Stack</span>
+<span style="color: #7CB8BB;">int</span>* <span style="color: #DFAF8F;">b</span> = <span style="color: #F0DFAF; font-weight: bold;">new</span> <span style="color: #7CB8BB;">b</span>[10]; <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Heap</span>
+
+
+} <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">a deleted , b leaked</span>
+
+<span style="color: #7CB8BB;">int</span> <span style="color: #93E0E3;">g</span>() {
+<span style="color: #7CB8BB;">int</span>* <span style="color: #DFAF8F;">b</span> = <span style="color: #F0DFAF; font-weight: bold;">new</span> <span style="color: #7CB8BB;">b</span>;
+
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">if returned early leaked</span>
+<span style="color: #F0DFAF; font-weight: bold;">delete</span> b;
+} <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">ok deleted</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #F0DFAF; font-weight: bold;">class</span> <span style="color: #7CB8BB;">IntHandle</span> {
+ <span style="color: #F0DFAF; font-weight: bold;">public</span>:
+  <span style="color: #93E0E3;">IntHandle</span>(<span style="color: #7CB8BB;">int</span>);
+
+  ~<span style="color: #93E0E3;">IntHandle</span>();
+ <span style="color: #F0DFAF; font-weight: bold;">private</span>:
+  <span style="color: #7CB8BB;">int</span>* <span style="color: #DFAF8F;">p_</span>;
+};
+
+<span style="color: #BFEBBF;">IntHandle</span>::<span style="color: #93E0E3;">IntHandle</span>(<span style="color: #7CB8BB;">int</span> <span style="color: #DFAF8F;">elementCount</span>){
+   p_ = <span style="color: #F0DFAF; font-weight: bold;">new</span> <span style="color: #7CB8BB;">int</span>[elementCount];
+}
+
+~<span style="color: #BFEBBF;">IntHandle</span>::<span style="color: #93E0E3;">IntHandle</span>() { <span style="color: #F0DFAF; font-weight: bold;">delete</span>[] p_; }
+
+
+<span style="color: #7CB8BB;">int</span> <span style="color: #93E0E3;">f</span>(){
+<span style="color: #7CB8BB;">IntHandle</span> <span style="color: #DFAF8F;">i</span>(50);
+<span style="color: #7CB8BB;">vector</span>&lt;Shape&gt; <span style="color: #DFAF8F;">i</span>;
+
+} <span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">destruktor handles deletion</span>
+</pre>
+</div>
+
+
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"ConsoleCanvas.h"</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"SpaceShipDrawable.h"</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">"ProjectileDrawable.h"</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;string&gt;</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;iostream&gt;</span>
+<span style="color: #94BFF3;">#include</span> <span style="color: #CC9393;">&lt;vector&gt;</span>
+
+<span style="color: #F0DFAF; font-weight: bold;">using</span> <span style="color: #F0DFAF; font-weight: bold;">namespace</span> <span style="color: #BFEBBF;">std</span>;
+
+<span style="color: #7CB8BB;">int</span> <span style="color: #93E0E3;">main</span>() {
+  <span style="color: #F0DFAF; font-weight: bold;">auto</span> <span style="color: #7CB8BB;">inst</span> = <span style="color: #BFEBBF;">ConsoleCanvas</span>::get();
+  <span style="color: #7CB8BB;">SpaceShipDrawable</span>* <span style="color: #DFAF8F;">cd</span> = <span style="color: #F0DFAF; font-weight: bold;">new</span> <span style="color: #7CB8BB;">SpaceShipDrawable</span>{1250};
+  <span style="color: #F0DFAF; font-weight: bold;">while</span> (<span style="color: #BFEBBF;">true</span>) {
+    inst.addCanvasDrawable(<span style="color: #F0DFAF; font-weight: bold;">new</span> <span style="color: #7CB8BB;">ProjectileDrawable</span>{cd-&gt;getPos()});
+    inst.drawCanvas();
+<span style="color: #5F7F5F;">// </span><span style="color: #7F9F7F;">Pointer to objects access member functions with "-&gt;" other objects with "."</span>
+  }
+
+  <span style="color: #F0DFAF; font-weight: bold;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Peter Bendel</p>
+<p class="date">Created: 2015-01-15 Thu 09:45</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
